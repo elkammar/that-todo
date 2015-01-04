@@ -12,26 +12,18 @@ import com.elkammar.thattodo.model.Todo;
  * @author elkammar
  *
  */
-//@Component
-public class TodoDbInMemory {
+@Component
+public class ThatDaoInMemory implements ThatDao {
 
 	private HashMap<String, HashMap<String, Todo>> db;
 	
-	//TODO change this to use Spring autowire instead.
-	private static TodoDbInMemory instance;
-	
-	private TodoDbInMemory() {
+	public ThatDaoInMemory() {
+		System.out.println("DB init...");
 		db = new HashMap<String, HashMap<String,Todo>>();
 		populateTestData();
 	}
-
-	public static TodoDbInMemory getInstance() {
-		if(instance == null) {
-			instance = new TodoDbInMemory();
-		}
-		return instance;
-	}
 	
+	@Override
 	public Todo save(String phone, Todo todo) {
 		HashMap<String, Todo> todoList = db.remove(phone);
 		
@@ -44,7 +36,8 @@ public class TodoDbInMemory {
 		return todo;
 	}
 	
-	public Todo get(String phone, String title) throws ThatException{
+	@Override
+	public Todo get(String phone, String title) throws ThatException {
 		try {
 			return db.get(phone).get(title);
 		} catch (NullPointerException e) {
@@ -53,6 +46,7 @@ public class TodoDbInMemory {
 		}
 	}
 	
+	@Override
 	public Todo update (String phone, String oldItemTitle, Todo newItem) throws ThatException {
 		// Check if the old item is already saved and delete it.
 		if(delete(phone, oldItemTitle) == null) {
@@ -63,6 +57,7 @@ public class TodoDbInMemory {
 		return save(phone, newItem);
 	}
 	
+	@Override
 	public Todo delete (String phone, String title) throws ThatException, IllegalArgumentException {
 		if(phone == null || title == null) {
 			throw new IllegalArgumentException("invalid item name.");

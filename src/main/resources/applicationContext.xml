@@ -6,6 +6,6 @@
   http://www.springframework.org/schema/context
   http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <bean id="thatService" class="com.elkammar.thattodo.services.ComponentTry"/>
-    <bean class="com.elkammar.thattodo.TodoResource"/>
+	<context:annotation-config />
+	<context:component-scan base-package="com.elkammar.thattodo" />
 </beans>
