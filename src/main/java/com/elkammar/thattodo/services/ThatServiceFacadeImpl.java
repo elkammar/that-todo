@@ -69,19 +69,20 @@ public class ThatServiceFacadeImpl implements ThatServiceFacade {
 	}
 
 	@Override
-	public void markAsDone(String phone, String title) {
-		// TODO fire an taskDone event.
-		System.out.println(eventManager);
-		System.out.println(notificationService);
-		System.out.println(thatDao);
-		eventManager.post(new ThatEventManager.TaskMarkedAsDoneEvent(phone, title));
+	public void changeTodoStatus(String phone, String title, boolean isDone) throws ThatException {
+		Todo todo = thatDao.get(phone, title);
+		if (todo == null) {
+			throw new ThatException("item not found");
+		}
+		todo.setDone(isDone);
+		thatDao.update(phone, todo.getTitle(), todo);
+		// if task was marked as done, fire an taskDone event.
+		if (isDone) {
+			eventManager.post(new ThatEventManager.TaskMarkedAsDoneEvent(phone, title));
+		}
+
 	}
 
-	@Override
-	public void markAsUndone(String phone, String title) {
-		
-	}
-	
 	public ThatDao getThatDao() {
 		return thatDao;
 	}
@@ -105,5 +106,4 @@ public class ThatServiceFacadeImpl implements ThatServiceFacade {
 	public void setNotificationService(ThatNotificationService notificationService) {
 		this.notificationService = notificationService;
 	}
-
 }

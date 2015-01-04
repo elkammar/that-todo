@@ -16,6 +16,7 @@
 		<guava.version>18.0</guava.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jetty.version>9.0.6.v20130930</jetty.version>
+		<twilio.version>3.4.5</twilio.version>
 	</properties>
 
 	<dependencyManagement>
@@ -78,6 +79,11 @@
             <scope>compile</scope>
         </dependency>
 		<!-- Misc -->
+		<dependency>
+			<groupId>com.twilio.sdk</groupId>
+			<artifactId>twilio-java-sdk</artifactId>
+			<version>${twilio.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>

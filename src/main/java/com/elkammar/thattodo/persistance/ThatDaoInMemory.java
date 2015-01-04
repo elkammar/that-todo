@@ -8,9 +8,10 @@ import com.elkammar.thattodo.exceptions.ThatException;
 import com.elkammar.thattodo.model.Todo;
 
 /**
+ * An in memory instant of the DB, used for testing and has a method to populate
+ * mock data.
  * 
  * @author elkammar
- *
  */
 @Component
 public class ThatDaoInMemory implements ThatDao {
@@ -18,7 +19,6 @@ public class ThatDaoInMemory implements ThatDao {
 	private HashMap<String, HashMap<String, Todo>> db;
 	
 	public ThatDaoInMemory() {
-		System.out.println("DB init...");
 		db = new HashMap<String, HashMap<String,Todo>>();
 		populateTestData();
 	}

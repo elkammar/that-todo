@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import com.elkammar.thattodo.events.ThatEventManager;
 import com.elkammar.thattodo.events.ThatEventManager.TaskMarkedAsDoneEvent;
+import com.elkammar.thattodo.exceptions.ThatException;
 import com.google.common.eventbus.Subscribe;
 
 @Component
@@ -17,12 +18,6 @@ public class ThatNotificationService {
 	@Autowired
 	ThatEventManager eventManager;
 	
-	public ThatNotificationService() {
-		
-		System.out.println("init ThatNotificationService");
-		// TODO Auto-generated constructor stub
-	}
-	
 	@PostConstruct
 	public void setup() {
 		System.out.println("PostConstruct");
@@ -32,11 +27,12 @@ public class ThatNotificationService {
 	
 	@Subscribe
 	public void taskMarkedAsDoneListener(TaskMarkedAsDoneEvent event) {
-		System.out.println("taskMarkedAsDoneListener");
-		System.out.println(util);
-		System.out.println(eventManager);
-		System.out.println("taskMarkedAsDoneListener: sending sms to "+event.getPhone());
-		util.sendSms(event.getPhone(), "\""+event.getTitle()+"\" task was marked as done.");
+		try {
+			util.sendSms(event.getPhone(), "\""+event.getTitle()+"\" task was marked as done.");
+		} catch (ThatException e) {
+			// Sending SMS failed.
+			e.printStackTrace();
+		}
 	}
 
 	public NotificationUtil getUtil() {

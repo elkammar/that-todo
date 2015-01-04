@@ -11,11 +11,11 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-import com.elkammar.thattodo.events.ThatEventManager;
+import com.elkammar.thattodo.exceptions.ThatException;
 import com.elkammar.thattodo.model.Todo;
 import com.elkammar.thattodo.services.ThatServiceFacade;
 
@@ -43,51 +43,53 @@ public class TodoResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{title}")
     public Todo get(@PathParam("title") String title) {
-    	Todo todo = null;
     	//TODO check if it accepts special chars
-    	//FIXME
-//		try {
-//			todo = TodoDbInMemory.getInstance().get(phone, title);
-//			System.out.println(todo==null?"unable to find \""+title+"\" todo item" : "todo item: \""+title+ " was queried");
-//		} catch (ThatException e) {
-//			System.out.println("ERROR:  "+ e.getMessage());
-//		}
-    	
-        return todo;
-    }
-    
-    @PUT
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response save(Todo todo) {
-    	System.out.println("saving: \""+todo+"\"");
-    	//FIXME
-//    	TodoDbInMemory.getInstance().save(phone, todo);
-        return Response.status(201).entity(todo.getTitle()+ " was saved").build();
+    	return service.get(phone, title);
     }
     
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response update(Todo todo) {
-    	System.out.println("updating: \""+todo+"\"");
-    	return Response.status(201).entity(todo.getTitle()+ " was updated").build();
+    public Response save(Todo todo) {
+    	if(service.save(phone, todo) != null) {
+    		return Response.status(Status.OK).entity(todo.getTitle()+ " was saved successfully").build();
+    	} else {
+    		return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Failed to save: "+todo.getTitle()).build();
+    	}
+        
+    }
+    
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{title}")
+    public Response update(@PathParam("title") String title, Todo todo) {
+    	if(service.update(phone, title, todo) != null) {
+    		return Response.status(Status.OK).entity(todo.getTitle()+ " was updated").build();
+    	} else {
+    		return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Failed to update: "+title).build();
+    	}
     }
     
     @POST
     @Path("/{title}")
 	public Response changeTodoStatus(@PathParam("title") String title,
 			@QueryParam("isDone") boolean isDone) {
-    	
-    	if(isDone) {
-    		service.markAsDone(phone, title);
-    	} else {
-    		service.markAsUndone(phone, title);
-    	}
-    	return Response.status(201).entity("Status for todo item "+title+ " was updated").build();
+    	try {
+			service.changeTodoStatus(title, title, isDone);
+			return Response.status(Status.OK).entity("Status for todo item "+title+ " was updated").build();
+		} catch (ThatException e) {
+			e.printStackTrace();
+			return Response.status(Status.OK).entity("Status for todo item "+title+ " was updated").build();
+		}
     }
     
     @DELETE
-    @Consumes(MediaType.TEXT_PLAIN)
-    public Response delete(String title) {
-    	return null;
+    @Path("/{title}")
+    public Response delete(@PathParam("title") String title) {
+    	if(service.delete(title, title) != null) {
+    		return Response.status(Status.OK).entity(title+ " was deleted").build();
+    	} else {
+    		//TODO return different status codes based on the error, i.e. not found,..etc
+    		return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Status for todo item "+title+ " was updated").build();
+    	}
     }
 }
