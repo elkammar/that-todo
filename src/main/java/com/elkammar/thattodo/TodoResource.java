@@ -34,8 +34,7 @@ public class TodoResource {
 	private ThatServiceFacade service;
 	
     /**
-     * Method handling HTTP GET requests. The returned object will be sent
-     * to the client as "text/plain" media type.
+     * Retrieves a todo item using it's title. It takes the title as a pathParam.
      *
      * @return String that will be returned as a text/plain response.
      */
