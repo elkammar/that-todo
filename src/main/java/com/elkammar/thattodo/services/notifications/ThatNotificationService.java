@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.elkammar.thattodo.events.ThatEventManager;
-import com.elkammar.thattodo.events.ThatEventManager.TaskMarkedAsDoneEvent;
+import com.elkammar.thattodo.events.TaskMarkedAsDoneEvent;
 import com.elkammar.thattodo.exceptions.ThatException;
 import com.google.common.eventbus.Subscribe;
 

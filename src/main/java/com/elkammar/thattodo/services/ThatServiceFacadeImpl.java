@@ -3,6 +3,7 @@ package com.elkammar.thattodo.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.elkammar.thattodo.events.TaskMarkedAsDoneEvent;
 import com.elkammar.thattodo.events.ThatEventManager;
 import com.elkammar.thattodo.exceptions.ThatException;
 import com.elkammar.thattodo.model.Todo;
@@ -78,7 +79,7 @@ public class ThatServiceFacadeImpl implements ThatServiceFacade {
 		thatDao.update(phone, todo.getTitle(), todo);
 		// if task was marked as done, fire an taskDone event.
 		if (isDone) {
-			eventManager.post(new ThatEventManager.TaskMarkedAsDoneEvent(phone, title));
+			eventManager.post(new TaskMarkedAsDoneEvent(phone, title));
 		}
 
 	}
